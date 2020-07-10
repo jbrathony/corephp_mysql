@@ -47,7 +47,7 @@ if (isset($_POST['user_id'])) {
 
     if ($delete_result === TRUE) {
         $response['type'] = "success";
-        $response['message'] = "User delted successfully!";
+        $response['message'] = "User deleted successfully!";
         $response['data'] = [];
 
         // Get user list

@@ -78,36 +78,45 @@ $users = resultToArray($users_result);
                 <div class="col-md-9">
                     <div class="row">
                         <div class="form-inline">
-                            <input type="text" class="form-control mb-5 mr-sm-4" placeholder="USERNAME" id="username">
-                            <input type="password" class="form-control mb-5 mr-sm-4" placeholder="PASSWORD" id="pwd">
-                            <select class="form-control mb-5 mr-sm-4" id="user_access_level">
-                                <?php
-                                foreach ($user_access_levels as $user_access_level) {
-                                ?>
-                                    <option value="<?php echo $user_access_level['id']; ?>">
-                                        <?php echo $user_access_level['role_name']; ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
+                            <div class="form-group">
+                                <input type="text" class="form-control mb-5 mr-sm-4" id="username" placeholder="USERNAME">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control mb-5 mr-sm-4" id="pwd" placeholder="PASSWORD">
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control mb-5 mr-sm-4" id="user_access_level">
+                                    <?php
+                                    foreach ($user_access_levels as $user_access_level) {
+                                    ?>
+                                        <option value="<?php echo $user_access_level['id']; ?>">
+                                            <?php echo $user_access_level['role_name']; ?>
+                                        </option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
                             <button type="button" class="btn btn-success mb-5" id="add_user">ADD USER</button>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="form-inline">
-                            <select class="form-control mb-2 mr-sm-2" id="username_list">
-                                <?php
-                                foreach ($users as $user) {
-                                ?>
-                                    <option value="<?php echo $user['id']; ?>">
-                                        <?php echo $user['username']; ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
+                            <div class="form-group">
+                                <select class="form-control mb-2 mr-sm-4" id="username_list">
+                                    <?php
+                                    foreach ($users as $user) {
+                                    ?>
+                                        <option value="<?php echo $user['id']; ?>">
+                                            <?php echo $user['username']; ?>
+                                        </option>
+                                    <?php
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                             <button type="button" class="btn btn-success mb-2" id="del_user">DELETE USER</button>
                         </div>
                     </div>

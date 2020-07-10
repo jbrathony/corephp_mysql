@@ -27,3 +27,7 @@
         font-size: 18px;
     }
 }
+
+#username_list {
+    width: 200px;
+}

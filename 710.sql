@@ -43,7 +43,7 @@ CREATE TABLE `userrole` (
 
 /*Data for the table `userrole` */
 
-insert  into `userrole`(`id`,`role_name`) values (1,'admin'),(2,'customer');
+insert  into `userrole`(`id`,`role_name`) values (1,'Admin'),(2,'Customer');
 
 /*Table structure for table `users` */
 
@@ -56,11 +56,11 @@ CREATE TABLE `users` (
   `roleid` int(11) NOT NULL,
   PRIMARY KEY (`id`,`username`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`username`,`password`,`roleid`) values (15,'ADMIN','asdf',1),(23,'customer','asdf',2);
+insert  into `users`(`id`,`username`,`password`,`roleid`) values (15,'ADMIN','asdf',1),(26,'customer','asdf',1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
