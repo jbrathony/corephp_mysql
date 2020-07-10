@@ -1,3 +1,5 @@
+// login user in index page
+
 $('#login-btn').click(function () {
     var username = $("#username").val();
     var password = $("#pwd").val();
@@ -11,7 +13,8 @@ $('#login-btn').click(function () {
         return;
     }
 
-    var url = "http://exceltomysql.com/php/login.php";
+    var url = base_url + "/php/login.php";
+
     var submitData = {
         username: username,
         password: password
@@ -28,7 +31,7 @@ $('#login-btn').click(function () {
                 if (result.data === '1') { // admin logged
                     window.location = "admin_navigation.php";
                 } else { // customer logged
-                    window.location = "customer_navigation.php";
+                    window.location = "customer_panel.php";
                 }
                 return false;
             } else {

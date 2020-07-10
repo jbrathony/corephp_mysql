@@ -18,6 +18,7 @@ if (isset($_POST['username'])) {
     if ($user_info->num_rows > 0) {
         $response['type'] = "success";
         $response['message'] = "Successfully login!";
+        
         while ($row = $user_info->fetch_assoc()) {
             $response['data'] = $row['roleid'];
 
