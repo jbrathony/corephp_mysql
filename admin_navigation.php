@@ -66,7 +66,7 @@ $users = resultToArray($users_result);
             <div class="row">
                 <div class="col-md-3">
                     <div class="sidenav">
-                        <a href="<?php echo $base_url . "admin_navigation.php"; ?>">
+                        <a href="<?php echo $base_url . "admin_panel.php"; ?>">
                             ADMIN PANEL
                         </a>
                         <a href="#inventory_file">

@@ -16,6 +16,48 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`vnv` /*!40100 DEFAULT CHARACTER SET utf
 
 USE `vnv`;
 
+/*Table structure for table `category` */
+
+DROP TABLE IF EXISTS `category`;
+
+CREATE TABLE `category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Data for the table `category` */
+
+insert  into `category`(`id`,`category_name`) values (1,'BLANK'),(2,'PREMIUM'),(3,'SALT NIC'),(4,'COILS'),(5,'CBD'),(6,'HARDWARE'),(7,'DISPOSABLES'),(8,'SUPPLIES');
+
+/*Table structure for table `location` */
+
+DROP TABLE IF EXISTS `location`;
+
+CREATE TABLE `location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `location` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Data for the table `location` */
+
+insert  into `location`(`id`,`location`) values (1,'BACKSTOCK'),(2,'N'),(3,'AB'),(4,'TX');
+
+/*Table structure for table `order_type` */
+
+DROP TABLE IF EXISTS `order_type`;
+
+CREATE TABLE `order_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Data for the table `order_type` */
+
+insert  into `order_type`(`id`,`type`) values (1,'FULFILLED'),(2,'ORDER'),(3,'DISCONTINUED'),(4,'PARTIAL');
+
 /*Table structure for table `orders` */
 
 DROP TABLE IF EXISTS `orders`;
@@ -26,8 +68,14 @@ CREATE TABLE `orders` (
   `item_name` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `quantity` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `customer_note` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `qty_fulfiled` int(11) DEFAULT NULL,
+  `category_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL,
+  `order_type` int(11) NOT NULL,
+  `check_status` enum('1','0') COLLATE utf8_unicode_ci DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1147 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2873 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `orders` */
 
@@ -56,11 +104,11 @@ CREATE TABLE `users` (
   `roleid` int(11) NOT NULL,
   PRIMARY KEY (`id`,`username`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`username`,`password`,`roleid`) values (15,'ADMIN','asdf',1),(26,'customer','asdf',1);
+insert  into `users`(`id`,`username`,`password`,`roleid`) values (15,'ADMIN','asdf',1),(27,'customer','asdf',2);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
