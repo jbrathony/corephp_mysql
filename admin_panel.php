@@ -3,14 +3,8 @@
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
 require_once('./vendor/autoload.php');
-require_once('./php/envionment.php');
-require_once('./php/db.php');
-
-$base_url = $_ENV["base_url"];
-
 require_once('./php/import.php');
 require_once('./php/admin_panel_backend.php');
-require_once('./php/filter.php');
 
 if (!isset($_SESSION)) {
     session_start();
@@ -19,6 +13,8 @@ if (!isset($_SESSION)) {
 if (empty($_SESSION['roleid'])) {
     header("Location: " . $base_url);
 }
+
+$base_url = $_ENV["base_url"];
 
 ?>
 
@@ -74,10 +70,10 @@ if (empty($_SESSION['roleid'])) {
 
         <!-- Filter form -->
         <div class="row text-center border border-warning rounded p-3 mb-5 mr-1 ml-1">
-            <div class="col-md-6">
-                <div class="row mr-1">
-                    <div class="col-md-4">
-                        <select class="form-control mr-sm-1" id="date_list">
+            <div class="col-md-10">
+                <form class="form-inline" method="POST">
+                    <div class="form-group col-4">
+                        <select class="form-control mr-sm-1" id="date_list" name="date_list" required>
                             <option value="" selected disabled>
                                 SELECT DATE
                             </option>
@@ -93,8 +89,8 @@ if (empty($_SESSION['roleid'])) {
                         </select>
                     </div>
 
-                    <div class="col-md-5">
-                        <select class="form-control mr-sm-1" id="customer_list">
+                    <div class="form-group col-5">
+                        <select class="form-control mr-sm-1" id="customer_list" name="customer_list" required>
                             <option value="" selected disabled>
                                 SELECT CUSTOMER NAME
                             </option>
@@ -110,28 +106,20 @@ if (empty($_SESSION['roleid'])) {
                         </select>
                     </div>
 
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-success" id="filter_date_customername">SEARCH</button>
+                    <div class="form-group col-2">
+                        <button type="submit" class="btn btn-success" id="filter_date_customername">SEARCH</button>
                     </div>
-                </div>
+                </form>
             </div>
 
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-9">
-                        <select class="form-control  mr-sm-1" id="select_filter">
-                            <option value="" selected disabled>
-                                SELECT FILTER
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-success" id="filter">SEARCH</button>
-                    </div>
-                </div>
+            <div class="col-md-2">
+                <form method="POST">
+                    <input type="hidden" value="1" name="filter_error">
+                    <button type="submit" class="btn btn-success" id="filter_error">SEE ERROR</button>
+                </form>
             </div>
         </div>
+
 
         <!-- Filter result -->
         <div class="row mr-1 ml-1 mb-5">
@@ -166,9 +154,9 @@ if (empty($_SESSION['roleid'])) {
                     </thead>
                     <tbody>
                         <?php
-                        if (empty($filter_result)) {
-                            echo "0";
-                        } else {
+                        if (!empty($filter_result)) {
+                            //     echo "0";
+                            // } else {
                         ?>
                             <?php
                             foreach ($filter_result as $row) {
@@ -180,7 +168,7 @@ if (empty($_SESSION['roleid'])) {
                                     <td><?php echo $row['item_name']; ?></td>
                                     <td><?php echo $row['quantity']; ?></td>
                                     <td>
-                                        <select class="form-control category">
+                                        <select class="form-control category" data-key="<?php echo $row['id']; ?>">
                                             <?php
                                             foreach ($category_list as $category) {
                                             ?>
@@ -193,10 +181,10 @@ if (empty($_SESSION['roleid'])) {
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" value="<?php echo $row['qty_fulfiled']; ?>" class="form-control qty_fulfiled">
+                                        <input type="text" value="<?php echo $row['qty_fulfiled']; ?>" class="form-control qty_fulfiled" data-key="<?php echo $row['id']; ?>">
                                     </td>
                                     <td>
-                                        <select class="form-control location">
+                                        <select class="form-control location" data-key="<?php echo $row['id']; ?>">
                                             <?php
                                             foreach ($location_list as $location) {
                                             ?>
@@ -209,7 +197,7 @@ if (empty($_SESSION['roleid'])) {
                                         </select>
                                     </td>
                                     <td>
-                                        <select class="form-control order_type">
+                                        <select class="form-control order_type" data-key="<?php echo $row['id']; ?>">
                                             <?php
                                             foreach ($order_type_list as $order_type) {
                                             ?>
@@ -223,7 +211,7 @@ if (empty($_SESSION['roleid'])) {
                                     </td>
                                     <td><?php echo $row['quantity']; ?></td>
                                     <td>
-                                        <input type="checkbox" class="check_status" value="<?php echo $row['check_status']; ?>" <?php echo ($row['check_status'] == 1 ? 'checked' : ''); ?>>
+                                        <input type="checkbox" class="check_status" value="<?php echo $row['check_status']; ?>" data-key="<?php echo $row['id']; ?>" <?php echo ($row['check_status'] == 1 ? 'checked' : ''); ?>>
                                     </td>
                                 </tr>
                         <?php
@@ -243,8 +231,9 @@ if (empty($_SESSION['roleid'])) {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
+    <script src="assets/script/alert.js"></script>
     <script src="assets/script/admin_panel.js"></script>
+
 </body>
 
 </html>
