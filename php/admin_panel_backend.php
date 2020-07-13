@@ -35,28 +35,34 @@ if (isset($_POST["date_list"]) && isset($_POST["customer_list"])) {
     $filter_result = $mysqli->query($filter_order_query);
 }
 
+$filter_error = "";
 if (isset($_POST["filter_error"])) {
     $filter_error_query = "SELECT * FROM orders WHERE error='1'";
     $filter_result = $mysqli->query($filter_error_query);
 }
 
 // update category by ajax call
-if (isset($_POST['selectedCategory']) && isset($_POST['selectedRow'])) {
-    $selected_row = $_POST['selectedRow'];
-    $selected_category = $_POST['selectedCategory'];
+if (isset($_POST['save_changes'])) {
+    $ToBeUpdatedData = $_POST['save_changes'];
 
-    $update_query = "UPDATE orders SET category_id='$selected_category' WHERE id='$selected_row'";
-    $update_result = $mysqli->query($update_query);
+    foreach ($ToBeUpdatedData as $row) {
+        $field = $row['field'];
+        $value = $row['value'];
+        $selected_row = $row['selectedRow'];
 
-    if ($update_result === TRUE) {
-        $response['type'] = "success";
-        $response['message'] = "Successfully updated!";
-        $response['data'] = $update_result;
-        
-    } else {
-        $response['type']  = "error";
-        $response['message'] = "Update failed!";
-        $response['data'] = null;
+        $update_query = "UPDATE orders SET $field='$value' WHERE id='$selected_row'";
+        $update_result = $mysqli->query($update_query);
+
+        if ($update_result === TRUE) {
+            $response['type'] = "success";
+            $response['message'] = "Successfully updated!";
+            $response['data'] = $update_result;
+    
+        } else {
+            $response['type']  = "error";
+            $response['message'] = "Update failed!";
+            $response['data'] = null;
+        }
     }
 
     echo json_encode($response);
@@ -75,7 +81,6 @@ if (isset($_POST['selectedLocation']) && isset($_POST['selectedRow'])) {
         $response['type'] = "success";
         $response['message'] = "Successfully updated!";
         $response['data'] = $update_result;
-        
     } else {
         $response['type']  = "error";
         $response['message'] = "Update failed!";
@@ -98,7 +103,6 @@ if (isset($_POST['selectedOrderType']) && isset($_POST['selectedRow'])) {
         $response['type'] = "success";
         $response['message'] = "Successfully updated!";
         $response['data'] = $update_result;
-        
     } else {
         $response['type']  = "error";
         $response['message'] = "Update failed!";
@@ -121,7 +125,6 @@ if (isset($_POST['updatedQtyFulfiled']) && isset($_POST['selectedRow'])) {
         $response['type'] = "success";
         $response['message'] = "Successfully updated!";
         $response['data'] = $update_result;
-        
     } else {
         $response['type']  = "error";
         $response['message'] = "Update failed!";
@@ -144,7 +147,6 @@ if (isset($_POST['updatedStatus']) && isset($_POST['selectedRow'])) {
         $response['type'] = "success";
         $response['message'] = "Successfully updated!";
         $response['data'] = $update_result;
-        
     } else {
         $response['type']  = "error";
         $response['message'] = "Update failed!";

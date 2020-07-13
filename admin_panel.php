@@ -125,6 +125,9 @@ $base_url = $_ENV["base_url"];
         <div class="row mr-1 ml-1 mb-5">
             <!-- <div class="row download_area"> -->
             <div class="col-md-12 dropdown_area mb-1">
+                <button type="button" class="btn btn-success mr-1" id="save_changes">
+                    SAVE CHANGES
+                </button>
                 <button type="button" class="btn btn-success mr-1" id="download_invoice">
                     DOWNLOAD INVOICE
                 </button>

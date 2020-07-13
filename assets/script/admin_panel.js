@@ -26,77 +26,81 @@ function callAjax(url, submitData) {
 }
 
 var url = base_url + "/php/admin_panel_backend.php";
+var ToBeUpdatedData = [];
 
 // update category
 $(".category").change(function () {
-    if (confirm("Are you sure?")) {
-        var selectedCategory = $(this).children("option:selected").val();
-        var selectedRow = $(this).data("key");
-        var submitData = {
-            selectedCategory: selectedCategory,
-            selectedRow: selectedRow
-        }
-
-        callAjax(url, submitData);
+    var selectedCategory = $(this).children("option:selected").val();
+    var selectedRow = $(this).data("key");
+    var submitData = {
+        value: selectedCategory,
+        selectedRow: selectedRow,
+        field: 'category_id'
     }
+    ToBeUpdatedData.push(submitData);
 });
 
 // update location
 $(".location").change(function () {
-    if (confirm("Are you sure?")) {
-        var selectedLocation = $(this).children("option:selected").val();
-        var selectedRow = $(this).data("key");
-        var submitData = {
-            selectedLocation: selectedLocation,
-            selectedRow: selectedRow
-        }
-
-        callAjax(url, submitData);
+    var selectedLocation = $(this).children("option:selected").val();
+    var selectedRow = $(this).data("key");
+    var submitData = {
+        value: selectedLocation,
+        selectedRow: selectedRow,
+        field: 'location_id'
     }
+
+    ToBeUpdatedData.push(submitData);
 });
 
 // update ordering
 $(".order_type").change(function () {
-    if (confirm("Are you sure?")) {
-        var selectedOrderType = $(this).children("option:selected").val();
-        var selectedRow = $(this).data("key");
-        var submitData = {
-            selectedOrderType: selectedOrderType,
-            selectedRow: selectedRow
-        }
-
-        callAjax(url, submitData);
+    var selectedOrderType = $(this).children("option:selected").val();
+    var selectedRow = $(this).data("key");
+    var submitData = {
+        value: selectedOrderType,
+        selectedRow: selectedRow,
+        field: 'order_type'
     }
+
+    ToBeUpdatedData.push(submitData);
 });
 
 // update quantity fulfiled
 $(".qty_fulfiled").focusout(function () {
-    if (confirm("Are you sure?")) {
-        var updatedQtyFulfiled = $(this).val();
-        var selectedRow = $(this).data("key");
-        var submitData = {
-            updatedQtyFulfiled: updatedQtyFulfiled,
-            selectedRow: selectedRow
-        }
-
-        callAjax(url, submitData);
+    var updatedQtyFulfiled = $(this).val();
+    var selectedRow = $(this).data("key");
+    var submitData = {
+        value: updatedQtyFulfiled,
+        selectedRow: selectedRow,
+        field: 'qty_fulfiled'
     }
+
+    ToBeUpdatedData.push(submitData);
 });
 
 // update check_status
 $(".check_status").change(function () {
-    if (confirm("Are you sure?")) {
-        var updatedStatus = 0;
+    var updatedStatus = 0;
 
-        if (this.checked) {
-            updatedStatus = 1;
-        } 
-        var selectedRow = $(this).data("key");
-        var submitData = {
-            updatedStatus: updatedStatus,
-            selectedRow: selectedRow
-        }
-
-        callAjax(url, submitData);
+    if (this.checked) {
+        updatedStatus = 1;
     }
+    var selectedRow = $(this).data("key");
+    var submitData = {
+        value: updatedStatus,
+        selectedRow: selectedRow,
+        field: 'check_status'
+    }
+
+    ToBeUpdatedData.push(submitData);
+});
+
+// save changes
+$("#save_changes").click(function () {
+    console.log('save change clicked', ToBeUpdatedData);
+    var submitData = {
+        save_changes: ToBeUpdatedData
+    };
+    callAjax(url, submitData);
 });
