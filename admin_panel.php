@@ -2,7 +2,7 @@
 
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
-require_once('./vendor/autoload.php');
+require_once('./vendor/autoload.php'); // TCPDF, Read Excel
 require_once('./php/import.php');
 require_once('./php/admin_panel_backend.php');
 
@@ -79,11 +79,8 @@ $base_url = $_ENV["base_url"];
                             </option>
                             <?php
                             foreach ($date_list as $date) {
-                            ?>
-                                <option value="<?php echo $date['date']; ?>">
-                                    <?php echo $date['date']; ?>
-                                </option>
-                            <?php
+                                $selected = (isset($_POST['date_list']) && $_POST['date_list'] == $date['date']) ? 'selected' : '';
+                                echo '<option value="' . $date['date'] . '" ' . $selected . '> ' . $date['date'] . '</option>';
                             }
                             ?>
                         </select>
@@ -96,11 +93,8 @@ $base_url = $_ENV["base_url"];
                             </option>
                             <?php
                             foreach ($customer_name_list as $customer_name) {
-                            ?>
-                                <option value="<?php echo $customer_name['customer_name']; ?>">
-                                    <?php echo $customer_name['customer_name']; ?>
-                                </option>
-                            <?php
+                                $selected = (isset($_POST['customer_list']) && $_POST['customer_list'] == $customer_name['customer_name']) ? 'selected' : '';
+                                echo '<option value="' . $customer_name['customer_name'] . '" ' . $selected . '> ' . $customer_name['customer_name'] . '</option>';
                             }
                             ?>
                         </select>
@@ -125,15 +119,29 @@ $base_url = $_ENV["base_url"];
         <div class="row mr-1 ml-1 mb-5">
             <!-- <div class="row download_area"> -->
             <div class="col-md-12 dropdown_area mb-1">
-                <button type="button" class="btn btn-success mr-1" id="save_changes">
-                    SAVE CHANGES
-                </button>
-                <button type="button" class="btn btn-success mr-1" id="download_invoice">
-                    DOWNLOAD INVOICE
-                </button>
-                <button type="button" class="btn btn-success" id="download_packing_slip">
-                    DOWNLOAD PACKING SLIP
-                </button>
+
+                <form class="form-inline" method="POST">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-success mr-1" id="save_changes" value="SAVE CHANGES">
+                    </div>
+                    <input type="hidden" name="create_invoice" value="1">
+                    <input type="hidden" name="date_list" value="<?php echo isset($_POST['date_list']) ? $_POST['date_list'] : ''; ?>">
+                    <input type="hidden" name="customer_list" value="<?php echo isset($_POST['customer_list']) ? $_POST['customer_list'] : ''; ?>">
+                    <input type="hidden" name="filter_error" value="<?php echo isset($_POST['filter_error']) ? $_POST['filter_error'] : ''; ?>">
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success mr-1" id="create_invoice" value="DOWNLOAD INVOICE">
+                    </div>
+                </form>
+
+                <form class="form-inline" method="POST">
+                    <input type="hidden" name="creating_packing_slip" value="1">
+                    <input type="hidden" name="date_list" value="<?php echo isset($_POST['date_list']) ? $_POST['date_list'] : ''; ?>">
+                    <input type="hidden" name="customer_list" value="<?php echo isset($_POST['customer_list']) ? $_POST['customer_list'] : ''; ?>">
+                    <input type="hidden" name="filter_error" value="<?php echo isset($_POST['filter_error']) ? $_POST['filter_error'] : ''; ?>">
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success" id="creating_packing_slip" value="DOWNLOAD PACKING SLIP">
+                    </div>
+                </form>
 
             </div>
             <!-- </div> -->
@@ -158,8 +166,6 @@ $base_url = $_ENV["base_url"];
                     <tbody>
                         <?php
                         if (!empty($filter_result)) {
-                            //     echo "0";
-                            // } else {
                         ?>
                             <?php
                             foreach ($filter_result as $row) {
@@ -212,7 +218,7 @@ $base_url = $_ENV["base_url"];
                                             ?>
                                         </select>
                                     </td>
-                                    <td><?php echo $row['quantity']; ?></td>
+                                    <td><?php echo $row['cost']; ?></td>
                                     <td>
                                         <input type="checkbox" class="check_status" value="<?php echo $row['check_status']; ?>" data-key="<?php echo $row['id']; ?>" <?php echo ($row['check_status'] == 1 ? 'checked' : ''); ?>>
                                     </td>

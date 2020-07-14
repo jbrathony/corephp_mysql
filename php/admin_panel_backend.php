@@ -23,11 +23,6 @@ $select_customer_name_query = "SELECT DISTINCT customer_username AS customer_nam
 $customer_name_list = $mysqli->query($select_customer_name_query);
 
 // filter
-// $filter_order_query = "SELECT * FROM orders";
-// $filter_result = $mysqli->query($filter_order_query);
-
-$filter_date_list = "";
-$filter_customer_list = "";
 if (isset($_POST["date_list"]) && isset($_POST["customer_list"])) {
     $filter_date_list = $_POST["date_list"];
     $filter_customer_list = $_POST["customer_list"];
@@ -35,7 +30,7 @@ if (isset($_POST["date_list"]) && isset($_POST["customer_list"])) {
     $filter_result = $mysqli->query($filter_order_query);
 }
 
-$filter_error = "";
+// see error
 if (isset($_POST["filter_error"])) {
     $filter_error_query = "SELECT * FROM orders WHERE error='1'";
     $filter_result = $mysqli->query($filter_error_query);
@@ -57,7 +52,6 @@ if (isset($_POST['save_changes'])) {
             $response['type'] = "success";
             $response['message'] = "Successfully updated!";
             $response['data'] = $update_result;
-    
         } else {
             $response['type']  = "error";
             $response['message'] = "Update failed!";
@@ -68,90 +62,92 @@ if (isset($_POST['save_changes'])) {
     echo json_encode($response);
 }
 
+// generate invoice pdf
+if (isset($_POST['create_invoice'])) {
+    $check_filter_customer = $_POST['customer_list'];
+    $check_filter_date = $_POST['date_list'];
+    $check_filter_error = $_POST['filter_error'];
+    $query = "";
 
-// update location by ajax call
-if (isset($_POST['selectedLocation']) && isset($_POST['selectedRow'])) {
-    $selected_row = $_POST['selectedRow'];
-    $selected_location = $_POST['selectedLocation'];
-
-    $update_query = "UPDATE orders SET location_id='$selected_location' WHERE id='$selected_row'";
-    $update_result = $mysqli->query($update_query);
-
-    if ($update_result === TRUE) {
-        $response['type'] = "success";
-        $response['message'] = "Successfully updated!";
-        $response['data'] = $update_result;
+    if ($check_filter_date !== "" && $check_filter_customer !== "") {
+        $query = "SELECT * FROM orders WHERE customer_username='$check_filter_customer' AND date='$check_filter_date'";
+    } else if ($check_filter_error !== "") {
+        $query = "SELECT * FROM orders WHERE error='1'";
     } else {
-        $response['type']  = "error";
-        $response['message'] = "Update failed!";
-        $response['data'] = null;
+        $query = "SELECT * FROM orders";
     }
 
-    echo json_encode($response);
+    $invoice_data = $mysqli->query($query);
+    $invoice_body = '';
+    foreach ($invoice_data as $row) {
+        $invoice_body .= '
+            <tr>
+                <td class="desc">' . $row["item_name"] . '</td>
+                <td class="qty">' . $row["quantity"] . '</td>
+                <td class="total">' . $row["cost"] . '</td>
+            </tr>
+        ';
+    }
+
+    $invoice_template = file_get_contents("INVOICE_PDF_HEADER.html");
+    $invoice_template .= $invoice_body;
+    $invoice_template .= file_get_contents("INVOICE_PDF_FOOTER.html");
+
+    // echo $invoice_template;
+    // exit;
+
+    // generate pdf using TCPDF library
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);  // create TCPDF object with default constructor args
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(true);
+    $pdf->SetAutoPageBreak(TRUE, 10);
+    $pdf->AddPage('P', "A4");
+    $pdf->writeHTML($invoice_template);
+
+    $pdf->Output('invoice.pdf', "I");
 }
 
 
-// update ordering by ajax call
-if (isset($_POST['selectedOrderType']) && isset($_POST['selectedRow'])) {
-    $selected_row = $_POST['selectedRow'];
-    $selected_order_type = $_POST['selectedOrderType'];
+// generate packing slip
+if (isset($_POST['creating_packing_slip'])) {
+    $check_filter_customer = $_POST['customer_list'];
+    $check_filter_date = $_POST['date_list'];
+    $check_filter_error = $_POST['filter_error'];
+    $query = "";
 
-    $update_query = "UPDATE orders SET order_type='$selected_order_type' WHERE id='$selected_row'";
-    $update_result = $mysqli->query($update_query);
-
-    if ($update_result === TRUE) {
-        $response['type'] = "success";
-        $response['message'] = "Successfully updated!";
-        $response['data'] = $update_result;
+    if ($check_filter_date !== "" && $check_filter_customer !== "") {
+        $query = "SELECT * FROM orders WHERE customer_username='$check_filter_customer' AND date='$check_filter_date'";
+    } else if ($check_filter_error !== "") {
+        $query = "SELECT * FROM orders WHERE error='1'";
     } else {
-        $response['type']  = "error";
-        $response['message'] = "Update failed!";
-        $response['data'] = null;
+        $query = "SELECT * FROM orders";
     }
 
-    echo json_encode($response);
-}
-
-
-// update quantity fulfiled by ajax call
-if (isset($_POST['updatedQtyFulfiled']) && isset($_POST['selectedRow'])) {
-    $selected_row = $_POST['selectedRow'];
-    $updated_qty_fulfiled = $_POST['updatedQtyFulfiled'];
-
-    $update_query = "UPDATE orders SET qty_fulfiled='$updated_qty_fulfiled' WHERE id='$selected_row'";
-    $update_result = $mysqli->query($update_query);
-
-    if ($update_result === TRUE) {
-        $response['type'] = "success";
-        $response['message'] = "Successfully updated!";
-        $response['data'] = $update_result;
-    } else {
-        $response['type']  = "error";
-        $response['message'] = "Update failed!";
-        $response['data'] = null;
+    $packing_slip_data = $mysqli->query($query);
+    $packing_slip_body = '';
+    foreach ($packing_slip_data as $row) {
+        $packing_slip_body .= '
+            <tr>
+                <td class="desc">' . $row["item_name"] . '</td>
+                <td class="qty">' . $row["quantity"] . '</td>
+            </tr>
+        ';
     }
 
-    echo json_encode($response);
-}
+    $packing_slip_template = file_get_contents("PACKING_PDF_HEADER.html");
+    $packing_slip_template .= $packing_slip_body;
+    $packing_slip_template .= file_get_contents("PACKING_PDF_FOOTER.html");
 
+    // echo $packing_slip_template;
+    // exit;
 
-// update check_status by ajax call
-if (isset($_POST['updatedStatus']) && isset($_POST['selectedRow'])) {
-    $selected_row = $_POST['selectedRow'];
-    $updated_status = $_POST['updatedStatus'];
+    // generate pdf using TCPDF library
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);  // create TCPDF object with default constructor args
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(true);
+    $pdf->SetAutoPageBreak(TRUE, 10);
+    $pdf->AddPage('P', "A4");
+    $pdf->writeHTML($packing_slip_template);
 
-    $update_query = "UPDATE orders SET check_status='$updated_status' WHERE id='$selected_row'";
-    $update_result = $mysqli->query($update_query);
-
-    if ($update_result === TRUE) {
-        $response['type'] = "success";
-        $response['message'] = "Successfully updated!";
-        $response['data'] = $update_result;
-    } else {
-        $response['type']  = "error";
-        $response['message'] = "Update failed!";
-        $response['data'] = null;
-    }
-
-    echo json_encode($response);
+    $pdf->Output('invoice.pdf', "I");
 }

@@ -37,3 +37,7 @@ table tbody tr td {
     display: flex;
     padding: 1px;
 }
+
+form {
+    margin-block-end: initial;
+}
