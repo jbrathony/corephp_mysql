@@ -4,6 +4,7 @@
  * Excel file import to mysql
  */
 if (isset($_POST["import"])) {
+    require_once('db.php');
 
     $allowedFileType = [
         'application/vnd.ms-excel',

@@ -149,5 +149,5 @@ if (isset($_POST['creating_packing_slip'])) {
     $pdf->AddPage('P', "A4");
     $pdf->writeHTML($packing_slip_template);
 
-    $pdf->Output('invoice.pdf', "I");
+    $pdf->Output('packing-slip.pdf', "I");
 }

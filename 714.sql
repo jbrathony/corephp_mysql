@@ -70,12 +70,14 @@ CREATE TABLE `orders` (
   `customer_note` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `date` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `qty_fulfiled` int(11) DEFAULT NULL,
+  `cost` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `category_id` int(11) NOT NULL,
   `location_id` int(11) NOT NULL,
   `order_type` int(11) NOT NULL,
   `check_status` enum('1','0') COLLATE utf8_unicode_ci DEFAULT '0',
+  `error` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2873 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2882 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `orders` */
 
