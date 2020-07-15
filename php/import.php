@@ -31,6 +31,7 @@ if (isset($_POST["import"])) {
         $order_type = 1;
         $check_status = 0;
         $qty_fulfiled = 1;
+        $cost = "$1.00";
         $date = date("m/d/Y");
 
         for ($i = 1; $i <= $sheetCount; $i++) {
@@ -60,8 +61,8 @@ if (isset($_POST["import"])) {
                 !empty($customer_username) || !empty($item_name)
                 || !empty($quantity)
             ) {
-                $query = "INSERT INTO orders(customer_username, item_name, quantity, customer_note, date, qty_fulfiled, category_id, location_id, order_type, check_status)
-                VALUES ('$customer_username', '$item_name', '$quantity', '$customer_note', '$date', '$qty_fulfiled', '$category_id', '$location_id', '$order_type', '$check_status')";
+                $query = "INSERT INTO orders(customer_username, item_name, quantity, customer_note, date, qty_fulfiled, cost, category_id, location_id, order_type, check_status)
+                VALUES ('$customer_username', '$item_name', '$quantity', '$customer_note', '$date', '$qty_fulfiled', '$cost', '$category_id', '$location_id', '$order_type', '$check_status')";
                 //    echo 'query === '.$query; exit;
                 if ($mysqli->query($query) === TRUE) {
                     $type = "success";

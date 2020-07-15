@@ -115,9 +115,11 @@ $base_url = $_ENV["base_url"];
         </div>
 
 
+
+
         <!-- Filter result -->
         <div class="row mr-1 ml-1 mb-5">
-            <!-- <div class="row download_area"> -->
+            <!-- save changes && download as pdf -->
             <div class="col-md-12 dropdown_area mb-1">
 
                 <form class="form-inline" method="POST">
@@ -144,22 +146,21 @@ $base_url = $_ENV["base_url"];
                 </form>
 
             </div>
-            <!-- </div> -->
 
             <div class="table-responsive filter-result-area">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered" id="order_table">
                     <thead>
                         <tr>
-                            <th>DATE</th>
-                            <th>CUSTOMER NOTE</th>
-                            <th>CUSTOMER NAME</th>
-                            <th>PRODUCT NAME</th>
-                            <th>QUANTITY</th>
-                            <th>CATEGORY</th>
-                            <th>QUANTITY FULFILED</th>
-                            <th>LOCATION</th>
-                            <th>ORDERING</th>
-                            <th>COST</th>
+                            <th><input type="text" class="form-control" id="filter0" onkeyup="tblFilter(0)" placeholder="DATE"></th>
+                            <th><input type="text" class="form-control" id="filter1" onkeyup="tblFilter(1)" placeholder="CUSTOMER NOTE"></th>
+                            <th><input type="text" class="form-control" id="filter2" onkeyup="tblFilter(2)" placeholder="CUSTOMER NAME"></th>
+                            <th><input type="text" class="form-control" id="filter3" onkeyup="tblFilter(3)" placeholder="PRODUCT NAME"></th>
+                            <th><input type="text" class="form-control" id="filter4" onkeyup="tblFilter(4)" placeholder="QUANTITY"></th>
+                            <th><input type="text" class="form-control" id="filter5" onkeyup="tblFilter(5)" placeholder="CATEGORY"></th>
+                            <th><input type="text" class="form-control" id="filter6" onkeyup="tblFilter(6)" placeholder="QUANTITY FULFILED"></th>
+                            <th><input type="text" class="form-control" id="filter7" onkeyup="tblFilter(7)" placeholder="LOCATION"></th>
+                            <th><input type="text" class="form-control" id="filter8" onkeyup="tblFilter(8)" placeholder="ORDERING"></th>
+                            <th><input type="text" class="form-control" id="filter9" onkeyup="tblFilter(9)" placeholder="COST"></th>
                             <th>CHECKED</th>
                         </tr>
                     </thead>
@@ -242,7 +243,44 @@ $base_url = $_ENV["base_url"];
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="assets/script/alert.js"></script>
     <script src="assets/script/admin_panel.js"></script>
+    <script>
+        // filter by thead
+        function tblFilter(index) {
+            var input, filter, tr, td, i, txtValue, selectObject;
+            input = $("#filter" + index).val();
+            filter = input.toUpperCase();
+            tr = $("#order_table tr");
 
+            // filter in select box
+            if (index == 5 || index == 7 || index == 8) {
+                $('#order_table tbody tr').each(function() {
+                    td = $(this).find('td:eq(' + index + ')');
+                    selectObject = td.find("select option:selected");
+                    if (selectObject) {
+                        txtValue = selectObject.text();
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            $(this).css("display", "");
+                        } else {
+                            $(this).css("display", "none");
+                        }
+                    }
+                });
+            } else {
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[index];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+        }
+    </script>
 </body>
 
 </html>
