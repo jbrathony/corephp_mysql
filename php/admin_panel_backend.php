@@ -36,16 +36,17 @@ if (isset($_POST["filter_error"])) {
     $filter_result = $mysqli->query($filter_error_query);
 }
 
-// update category by ajax call
+// update orderdata by ajax call
 if (isset($_POST['save_changes'])) {
     $ToBeUpdatedData = $_POST['save_changes'];
+    $date = date("m/d/Y");
 
     foreach ($ToBeUpdatedData as $row) {
         $field = $row['field'];
         $value = $row['value'];
         $selected_row = $row['selectedRow'];
 
-        $update_query = "UPDATE orders SET $field='$value' WHERE id='$selected_row'";
+        $update_query = "UPDATE orders SET $field='$value', date='$date' WHERE id='$selected_row'";
         $update_result = $mysqli->query($update_query);
 
         if ($update_result === TRUE) {

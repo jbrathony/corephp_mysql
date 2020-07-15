@@ -151,17 +151,17 @@ $base_url = $_ENV["base_url"];
                 <table class="table table-hover table-bordered" id="order_table">
                     <thead>
                         <tr>
-                            <th><input type="text" class="form-control" id="filter0" onkeyup="tblFilter(0)" placeholder="DATE"></th>
-                            <th><input type="text" class="form-control" id="filter1" onkeyup="tblFilter(1)" placeholder="CUSTOMER NOTE"></th>
-                            <th><input type="text" class="form-control" id="filter2" onkeyup="tblFilter(2)" placeholder="CUSTOMER NAME"></th>
-                            <th><input type="text" class="form-control" id="filter3" onkeyup="tblFilter(3)" placeholder="PRODUCT NAME"></th>
-                            <th><input type="text" class="form-control" id="filter4" onkeyup="tblFilter(4)" placeholder="QUANTITY"></th>
-                            <th><input type="text" class="form-control" id="filter5" onkeyup="tblFilter(5)" placeholder="CATEGORY"></th>
-                            <th><input type="text" class="form-control" id="filter6" onkeyup="tblFilter(6)" placeholder="QUANTITY FULFILED"></th>
-                            <th><input type="text" class="form-control" id="filter7" onkeyup="tblFilter(7)" placeholder="LOCATION"></th>
-                            <th><input type="text" class="form-control" id="filter8" onkeyup="tblFilter(8)" placeholder="ORDERING"></th>
-                            <th><input type="text" class="form-control" id="filter9" onkeyup="tblFilter(9)" placeholder="COST"></th>
-                            <th>CHECKED</th>
+                            <th style="width: 8%"><input type="text" class="form-control" id="filter0" onkeyup="tblFilter(0)" placeholder="DATE"></th>
+                            <th style="width: 8%"><input type="text" class="form-control" id="filter1" onkeyup="tblFilter(1)" placeholder="CUSTOMER NOTE"></th>
+                            <th style="width: 8%"><input type="text" class="form-control" id="filter2" onkeyup="tblFilter(2)" placeholder="CUSTOMER NAME"></th>
+                            <th style="width: 15%"><input type="text" class="form-control" id="filter3" onkeyup="tblFilter(3)" placeholder="PRODUCT NAME"></th>
+                            <th style="width: 10%"><input type="text" class="form-control" id="filter4" onkeyup="tblFilter(4)" placeholder="QUANTITY"></th>
+                            <th style="width: 10%"><input type="text" class="form-control" id="filter5" onkeyup="tblFilter(5)" placeholder="CATEGORY"></th>
+                            <th style="width: 8%"><input type="text" class="form-control" id="filter6" onkeyup="tblFilter(6)" placeholder="QUANTITY FULFILED"></th>
+                            <th style="width: 10%"><input type="text" class="form-control" id="filter7" onkeyup="tblFilter(7)" placeholder="LOCATION"></th>
+                            <th style="width: 10%"><input type="text" class="form-control" id="filter8" onkeyup="tblFilter(8)" placeholder="ORDERING"></th>
+                            <th style="width: 8%"><input type="text" class="form-control" id="filter9" onkeyup="tblFilter(9)" placeholder="COST"></th>
+                            <th style="width: 5%">CHECKED</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -246,7 +246,7 @@ $base_url = $_ENV["base_url"];
     <script>
         // filter by thead
         function tblFilter(index) {
-            var input, filter, tr, td, i, txtValue, selectObject;
+            var input, filter, tr, td, i, txtValue, selectObject, inputObject;
             input = $("#filter" + index).val();
             filter = input.toUpperCase();
             tr = $("#order_table tr");
@@ -258,6 +258,19 @@ $base_url = $_ENV["base_url"];
                     selectObject = td.find("select option:selected");
                     if (selectObject) {
                         txtValue = selectObject.text();
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            $(this).css("display", "");
+                        } else {
+                            $(this).css("display", "none");
+                        }
+                    }
+                });
+            } else if (index == 6) {
+                $('#order_table tbody tr').each(function() {
+                    td = $(this).find('td:eq(' + index + ')');
+                    inputObject = td.find("input");
+                    if (inputObject) {
+                        txtValue = inputObject.val();
                         if (txtValue.toUpperCase().indexOf(filter) > -1) {
                             $(this).css("display", "");
                         } else {
