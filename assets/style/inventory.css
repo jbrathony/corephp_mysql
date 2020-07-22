@@ -1,0 +1,52 @@
+#file {
+    width: 150px;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header {
+    padding: 4rem 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+    border-radius: .3rem;
+}
+
+table thead tr th {
+    vertical-align: middle !important;
+    text-align: center !important;
+    background-color: #4CAF50;
+    /* color: white; */
+}
+
+table tbody tr td {
+    vertical-align: middle !important;
+    text-align: center !important;
+    background-color: #e9ecef;
+}
+
+.table-bordered td,
+.table-bordered th {
+    border: 2px solid white;
+}
+
+.dropdown_area {
+    justify-content: flex-end;
+    display: flex;
+    padding: 1px;
+}
+
+form {
+    margin-block-end: initial;
+}
+
+#save_changes {
+    display: none;
+}
+
+#add_product_form {
+    justify-content: center;
+    text-align: center;
+}

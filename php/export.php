@@ -18,8 +18,9 @@ while ($rec = mysqli_fetch_row($result)) {
 }
 
 header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=export.xls");
+header("Content-Disposition: attachment; filename=inventory.xls");
 header("Pragma: no-cache");
 header("Expires: 0");
 
 echo ucwords($columnHeader) . "\n" . $setData . "\n";
+// header("Location: " . $base_url .'inventory.php');

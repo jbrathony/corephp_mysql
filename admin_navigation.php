@@ -69,7 +69,7 @@ $users = resultToArray($users_result);
                         <a href="<?php echo $base_url . "admin_panel.php"; ?>">
                             ADMIN PANEL
                         </a>
-                        <a href="#inventory_file">
+                        <a href="<?php echo $base_url . "inventory.php"; ?>">
                             INVENTORY FILE
                         </a>
                     </div>

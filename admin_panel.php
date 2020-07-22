@@ -58,7 +58,7 @@ $base_url = $_ENV["base_url"];
             </div>
         </div>
 
-        <!-- display result message forimporting excel  -->
+        <!-- display result message for importing excel  -->
         <?php if (!empty($type)) { ?>
             <div class="alert alert-<?php echo $type; ?> alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
