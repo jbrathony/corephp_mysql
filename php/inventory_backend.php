@@ -20,6 +20,10 @@ $category_list = $mysqli->query($category_list_query);
 $edited_items_query = "SELECT id, item_name FROM inventory WHERE edit_flag=1";
 $edited_items = $mysqli->query($edited_items_query);
 
+// get filter dropdown list
+$filter_list_query = "SELECT id, filter_name FROM filter_list ORDER BY id";
+$filter_list = $mysqli->query($filter_list_query);
+
 // filter
 $productname_filter = "";
 if (isset($_POST["productname_filter"])) {
@@ -38,6 +42,31 @@ if (isset($_POST['edited_item'])) {
     $filter_result = $mysqli->query($filter_query);
 }
 
+
+// filter by filter dropdown list
+if (isset($_POST['filter_list'])) {
+    $filter_value = $_POST["filter_list"];
+    $filter_query = "";
+    switch ($filter_value) {
+            // edited items
+        case 1:
+            $filter_query = "SELECT * FROM inventory WHERE edit_flag='1'";
+            break;
+            // newly added items
+        case 2:
+            $filter_query = "SELECT * FROM inventory WHERE edit_flag='2'";
+            break;
+            // quantity in hand is zero
+        case 3:
+            $filter_query = "SELECT * FROM inventory WHERE quantity_in_hand='0'";
+            break;
+        default:
+            $filter_query = "SELECT * FROM inventory WHERE edit_flag='1'";
+            break;
+    }
+    $filter_result = $mysqli->query($filter_query);
+}
+
 // add produt by ajax call
 if (isset($_POST['product_add'])) {
     $product_name = $_POST['product_name'];
@@ -45,8 +74,9 @@ if (isset($_POST['product_add'])) {
     $category = $_POST['category'];
     $cost = $_POST['cost'];
     $date = date("m/d/Y");
+    $edit_flag = 2; // 2 is newly added items
 
-    $insert_query = "INSERT INTO inventory(item_name, quantity_in_hand, date, cost, category_id) VALUES ('$product_name', '$quantity', '$date', '$cost', '$category')";
+    $insert_query = "INSERT INTO inventory(item_name, quantity_in_hand, date, cost, category_id, edit_flag) VALUES ('$product_name', '$quantity', '$date', '$cost', '$category', '$edit_flag')";
     $insert_result = $mysqli->query($insert_query);
 
     if ($insert_result === TRUE) {
@@ -85,13 +115,14 @@ if (isset($_POST['save_changes'])) {
     $date = date("m/d/Y");
     $update_result;
     $edited_items = [];
+    $edit_flag = 1; // 1 is edited items
 
     foreach ($ToBeUpdatedData as $row) {
         $field = $row['field'];
         $value = $row['value'];
         $selected_row = $row['selectedRow'];
 
-        $update_query = "UPDATE inventory SET $field='$value', date='$date', edit_flag='1' WHERE id='$selected_row'";
+        $update_query = "UPDATE inventory SET $field='$value', date='$date', edit_flag='$edit_flag' WHERE id='$selected_row'";
         $update_result = $mysqli->query($update_query);
     }
 

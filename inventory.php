@@ -59,14 +59,14 @@ require_once('./php/inventory_backend.php');
             <div class="col-md-4">
                 <form method="POST">
                     <div class="input-group mb-5">
-                        <select class="form-control" name="edited_item" id="edited_item" required>
+                        <select class="form-control" name="filter_list" id="filter_list" required>
                             <option value="" selected disabled>
                                 APPLY FILTER
                             </option>
                             <?php
-                            foreach ($edited_items as $edited_item) {
-                                $selected = (isset($_POST['edited_item']) && $_POST['edited_item'] == $edited_item['id']) ? 'selected' : '';
-                                echo '<option value="' . $edited_item['id'] . '" ' . $selected . '> ' . $edited_item['item_name'] . '</option>';
+                            foreach ($filter_list as $item) {
+                                $selected = (isset($_POST['filter_list']) && $_POST['filter_list'] == $item['id']) ? 'selected' : '';
+                                echo '<option value="' . $item['id'] . '" ' . $selected . '> ' . $item['filter_name'] . '</option>';
                             }
                             ?>
                         </select>
