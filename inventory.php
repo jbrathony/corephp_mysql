@@ -42,19 +42,9 @@ require_once('./php/inventory_backend.php');
             </div>
         </div>
 
-        <!-- display message -->
-        <?php if (!empty($type)) { ?>
-            <div class="alert alert-<?php echo $type; ?> alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <?php if (!empty($message)) {
-                    echo $message;
-                } ?>
-            </div>
-        <?php } ?>
-
         <!-- Filter form -->
         <div class="row" style="justify-content: center;">
-            <div class="col-md-10">
+            <div class="col-md-4">
                 <form class="needs-validation" method="POST" novalidate>
                     <div class="input-group mb-5">
                         <input type="text" class="form-control" name="productname_filter" placeholder="SEARCH PRODUCT" value="<?php echo $productname_filter; ?>" required>
@@ -62,6 +52,35 @@ require_once('./php/inventory_backend.php');
                             <button class="btn btn-success" type="submit">SEARCH</button>
                         </div>
                         <div class="invalid-feedback">Please fill out this field.</div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-4">
+                <form method="POST">
+                    <div class="input-group mb-5">
+                        <select class="form-control" name="edited_item" id="edited_item" required>
+                            <option value="" selected disabled>
+                                APPLY FILTER
+                            </option>
+                            <?php
+                            foreach ($edited_items as $edited_item) {
+                                $selected = (isset($_POST['edited_item']) && $_POST['edited_item'] == $edited_item['id']) ? 'selected' : '';
+                                echo '<option value="' . $edited_item['id'] . '" ' . $selected . '> ' . $edited_item['item_name'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="submit">SEARCH</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-2">
+                <form method="GET">
+                    <div class="input-group mb-5">
+                        <button class="btn btn-success" type="submit">ALL PRODUCTS</button>
                     </div>
                 </form>
             </div>
@@ -89,7 +108,7 @@ require_once('./php/inventory_backend.php');
             <div class="collapse col-md-12" id="add_product_form">
                 <div class="form-group text-center border border-warning rounded p-2 mb-1 mt-3" style="display: inline-flex;">
                     <input type="text" class="form-control mr-3" name="add_product_name" id="add_product_name" placeholder="PRODUCT NAME">
-                    <input type="text" class="form-control mr-3" name="add_quantity" id="add_quantity" placeholder="QUANTITY">
+                    <input type="text" class="form-control mr-3" name="add_quantity" id="add_quantity" placeholder="QUANTITY IN HAND">
                     <select class="form-control mr-3" name="add_category" id="add_category">
                         <?php
                         foreach ($category_list as $category) {
@@ -116,8 +135,9 @@ require_once('./php/inventory_backend.php');
                             <th style="width: 30%"><input type="text" class="form-control" id="filter1" onkeyup="tblFilter(1)" placeholder="PRODUCT NAME"></th>
                             <th style="width: 10%"><input type="text" class="form-control" id="filter2" onkeyup="tblFilter(2)" placeholder="QUANTITY IN HAND"></th>
                             <th style="width: 15%"><input type="text" class="form-control" id="filter3" onkeyup="tblFilter(3)" placeholder="CATEGORY"></th>
-                            <th style="width: 15%"><input type="text" class="form-control" id="filter4" onkeyup="tblFilter(4)" placeholder="COST"></th>
+                            <th style="width: 10%"><input type="text" class="form-control" id="filter4" onkeyup="tblFilter(4)" placeholder="COST"></th>
                             <th style="width: 15%">EDIT PRODUCT</th>
+                            <th style="width: 5%">#</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,13 +147,13 @@ require_once('./php/inventory_backend.php');
                             <?php
                             foreach ($filter_result as $row) {
                             ?>
-                                <tr>
+                                <tr class="<?php if ($row['edit_flag']) echo "edited" ?>">
                                     <td><?php echo $row['date']; ?></td>
                                     <td>
                                         <input type="text" value="<?php echo $row['item_name']; ?>" class="form-control product_name" data-key="<?php echo $row['id']; ?>">
                                     </td>
                                     <td>
-                                        <input type="text" value="<?php echo $row['quantity']; ?>" class="form-control quantity" data-key="<?php echo $row['id']; ?>">
+                                        <input type="text" value="<?php echo $row['quantity_in_hand']; ?>" class="form-control quantity" data-key="<?php echo $row['id']; ?>">
                                     </td>
                                     <td>
                                         <select class="form-control category" data-key="<?php echo $row['id']; ?>">
@@ -153,6 +173,13 @@ require_once('./php/inventory_backend.php');
                                     </td>
                                     <td>
                                         <a class="btn btn-default delete" data-key="<?php echo $row['id']; ?>">DELETE</a>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        if ($row['edit_flag']) {
+                                            echo '<input type="checkbox" class="check_status" data-key="' . $row['id'] . '">';
+                                        }
+                                        ?>
                                     </td>
                                 </tr>
                         <?php

@@ -30,6 +30,24 @@ CREATE TABLE `category` (
 
 insert  into `category`(`id`,`category_name`) values (1,'BLANK'),(2,'PREMIUM'),(3,'SALT NIC'),(4,'COILS'),(5,'CBD'),(6,'HARDWARE'),(7,'DISPOSABLES'),(8,'SUPPLIES');
 
+/*Table structure for table `inventory` */
+
+DROP TABLE IF EXISTS `inventory`;
+
+CREATE TABLE `inventory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `quantity_in_hand` int(11) NOT NULL DEFAULT 0,
+  `cost` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `category_id` int(11) NOT NULL COMMENT 'category table''s id',
+  `date` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `edit_flag` enum('1','0') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`,`item_name`),
+  UNIQUE KEY `item_name` (`item_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Data for the table `inventory` */
+
 /*Table structure for table `location` */
 
 DROP TABLE IF EXISTS `location`;
@@ -77,7 +95,7 @@ CREATE TABLE `orders` (
   `check_status` enum('1','0') COLLATE utf8_unicode_ci DEFAULT '0',
   `error` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2882 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2914 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `orders` */
 

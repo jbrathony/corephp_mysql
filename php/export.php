@@ -2,10 +2,10 @@
 
 require_once('./db.php');
 
-$expo_query = "SELECT  `customer_note`, `customer_username`,`item_name`,`quantity` FROM orders";
+$expo_query = "SELECT  `item_name`, `quantity_in_hand`, `cost` FROM inventory";
 $result = $mysqli->query($expo_query);
 $columnHeader = '';
-$columnHeader = "Customer Note" . "\t" . "Customer Username" . "\t" . "Item name" . "\t" . "Quantity" . "\t";
+$columnHeader = "Product Name" . "\t" . "Quantity In Hand" . "\t" . "Cost" . "\t" . "\t";
 
 $setData = '';
 while ($rec = mysqli_fetch_row($result)) {
@@ -23,4 +23,3 @@ header("Pragma: no-cache");
 header("Expires: 0");
 
 echo ucwords($columnHeader) . "\n" . $setData . "\n";
-// header("Location: " . $base_url .'inventory.php');

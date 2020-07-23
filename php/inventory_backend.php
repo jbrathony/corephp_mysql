@@ -16,15 +16,26 @@ if (empty($_SESSION['roleid'])) {
 $category_list_query = "SELECT id, category_name FROM category";
 $category_list = $mysqli->query($category_list_query);
 
+// edited items list
+$edited_items_query = "SELECT id, item_name FROM inventory WHERE edit_flag=1";
+$edited_items = $mysqli->query($edited_items_query);
+
 // filter
 $productname_filter = "";
 if (isset($_POST["productname_filter"])) {
     $productname_filter = $_POST["productname_filter"];
-    $filter_query = "SELECT * FROM orders WHERE item_name='$productname_filter'";
+    $filter_query = "SELECT * FROM inventory WHERE item_name='$productname_filter'";
     $filter_result = $mysqli->query($filter_query);
 } else {
-    $query = "SELECT * FROM orders";
+    $query = "SELECT * FROM inventory";
     $filter_result = $mysqli->query($query);
+}
+
+// filter EDITED ITEMS
+if (isset($_POST['edited_item'])) {
+    $edited_item = $_POST["edited_item"];
+    $filter_query = "SELECT * FROM inventory WHERE id='$edited_item'";
+    $filter_result = $mysqli->query($filter_query);
 }
 
 // add produt by ajax call
@@ -35,12 +46,12 @@ if (isset($_POST['product_add'])) {
     $cost = $_POST['cost'];
     $date = date("m/d/Y");
 
-    $insert_query = "INSERT INTO orders(customer_username, item_name, quantity, DATE, qty_fulfiled, cost, category_id, location_id, order_type) VALUES ('ADMIN', '$product_name', '$quantity', '$date', '1', '$cost', '$category', '1', '1')";
+    $insert_query = "INSERT INTO inventory(item_name, quantity_in_hand, date, cost, category_id) VALUES ('$product_name', '$quantity', '$date', '$cost', '$category')";
     $insert_result = $mysqli->query($insert_query);
 
     if ($insert_result === TRUE) {
         $last_id = $mysqli->insert_id;
-        $get_new_added_row_query = "SELECT * FROM orders WHERE id = '$last_id'";
+        $get_new_added_row_query = "SELECT * FROM inventory WHERE id = '$last_id'";
         $get_new_added_row = $mysqli->query($get_new_added_row_query);
 
         $new_added_data = [];
@@ -61,8 +72,8 @@ if (isset($_POST['product_add'])) {
         $response['data'] = $return_data;
     } else {
         $response['type']  = "error";
-        $response['message'] = "Add failed!";
-        $response['data'] = $insert_query;
+        $response['message'] = "Product name is already exist!";
+        $response['data'] = $insert_result;
     }
 
     echo json_encode($response);
@@ -72,24 +83,62 @@ if (isset($_POST['product_add'])) {
 if (isset($_POST['save_changes'])) {
     $ToBeUpdatedData = $_POST['save_changes'];
     $date = date("m/d/Y");
+    $update_result;
+    $edited_items = [];
 
     foreach ($ToBeUpdatedData as $row) {
         $field = $row['field'];
         $value = $row['value'];
         $selected_row = $row['selectedRow'];
 
-        $update_query = "UPDATE orders SET $field='$value', date='$date' WHERE id='$selected_row'";
+        $update_query = "UPDATE inventory SET $field='$value', date='$date', edit_flag='1' WHERE id='$selected_row'";
         $update_result = $mysqli->query($update_query);
+    }
 
-        if ($update_result === TRUE) {
-            $response['type'] = "success";
-            $response['message'] = "Successfully updated!";
-            $response['data'] = $update_result;
-        } else {
-            $response['type']  = "error";
-            $response['message'] = "Update failed!";
-            $response['data'] = null;
+    if ($update_result === TRUE) {
+        $get_edited_items_query = "SELECT id, item_name FROM inventory WHERE edit_flag=1";
+        $get_edited_items = $mysqli->query($get_edited_items_query);
+
+        while ($row = $get_edited_items->fetch_assoc()) {
+            array_push($edited_items, $row);
         }
+
+        $response['type'] = "success";
+        $response['message'] = "Successfully updated!";
+        $response['data'] = $edited_items;
+    } else {
+        $response['type']  = "error";
+        $response['message'] = "Update failed!";
+        $response['data'] = null;
+    }
+
+    echo json_encode($response);
+}
+
+// update edit flag by check box
+if (isset($_POST['checkEditItem'])) {
+    $selected_row = $_POST['checkEditItem'];
+    $edited_items = [];
+
+
+    $update_query = "UPDATE inventory SET edit_flag='0' WHERE id='$selected_row'";
+    $update_result = $mysqli->query($update_query);
+
+    if ($update_result === TRUE) {
+        $get_edited_items_query = "SELECT id, item_name FROM inventory WHERE edit_flag=1";
+        $get_edited_items = $mysqli->query($get_edited_items_query);
+
+        while ($row = $get_edited_items->fetch_assoc()) {
+            array_push($edited_items, $row);
+        }
+
+        $response['type'] = "success";
+        $response['message'] = "Successfully checked!";
+        $response['data'] = $edited_items;
+    } else {
+        $response['type']  = "error";
+        $response['message'] = "Update failed!";
+        $response['data'] = null;
     }
 
     echo json_encode($response);
@@ -98,7 +147,7 @@ if (isset($_POST['save_changes'])) {
 // delete product by ajax call
 if (isset($_POST['delete_product'])) {
     $product_id = $_POST['delete_product'];
-    $delete_query = "DELETE FROM orders WHERE id='$product_id'";
+    $delete_query = "DELETE FROM inventory WHERE id='$product_id'";
     $delete_result = $mysqli->query($delete_query);
 
     if ($delete_result === TRUE) {
@@ -113,29 +162,3 @@ if (isset($_POST['delete_product'])) {
 
     echo json_encode($response);
 }
-
-// dropdown inventory list as excel
-// if (isset($_POST['download_inventory_list'])) {
-//     $expo_query = "SELECT  `customer_note`, `customer_username`,`item_name`,`quantity` FROM orders";
-//     $result = $mysqli->query($expo_query);
-//     $columnHeader = '';
-//     $columnHeader = "Customer Note" . "\t" . "Customer Username" . "\t" . "Item name" . "\t" . "Quantity" . "\t";
-
-//     $setData = '';
-//     while ($rec = mysqli_fetch_row($result)) {
-//         $rowData = '';
-//         foreach ($rec as $value) {
-//             $value = '"' . $value . '"' . "\t";
-//             $rowData .= $value;
-//         }
-//         $setData .= trim($rowData) . "\n";
-//     }
-
-//     header("Content-type: application/octet-stream");
-//     header("Content-Disposition: attachment; filename=inventory.xls");
-//     header("Pragma: no-cache");
-//     header("Expires: 0");
-
-//     echo ucwords($columnHeader) . "\n" . $setData . "\n";
-//     header("Location: " . $base_url .'inventory.php');
-// }
